@@ -1,13 +1,13 @@
-import type { NextPage } from 'next';
-import ChatBox from './chatBot';
+// pages/index.tsx
+import RuleChatbot from './chatBot';
 
-const Home: NextPage = () => {
-    return (
-        <div className="container">
-            <h1>Mi Chat Box</h1>
-            <ChatBox />
-        </div>
-    );
+const HomeChat: React.FC = () => {
+  return (
+    <div>
+      <h1>Mi Tienda en Línea</h1>
+      <RuleChatbot/>
+    </div>
+  );
 };
 
-export default Home;
+export default HomeChat;

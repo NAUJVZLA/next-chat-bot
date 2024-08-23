@@ -80,10 +80,12 @@
 
 
 
-.container {
+.chatbot-container {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
+  background-color: #e9e9eb;
+  border-radius: 30px;
 }
 
 .chat-box {
