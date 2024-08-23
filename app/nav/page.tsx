@@ -1,4 +1,4 @@
-
+'use client'
 import {
     Menubar,
     MenubarContent,
@@ -11,12 +11,15 @@ import {
 
 import Carrusel from "../carrusel/page";
 import { MenuNav } from "@/components/controller/navbar";
+import ChatBox from "@/components/chat/chatBot";
+
 
 export default function Navigator() {
     return (
         <div>
             <MenuNav />
             <Carrusel />
+            <ChatBox />
 
         </div>
 
