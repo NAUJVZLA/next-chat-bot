@@ -16,7 +16,7 @@ import ChatBox from "@/components/chat/chatBot";
 
 export default function Navigator() {
     return (
-        <div>
+        <div className="" >
             <MenuNav />
             <Carrusel />
             <ChatBox />
