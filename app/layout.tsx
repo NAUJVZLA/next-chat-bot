@@ -1,7 +1,12 @@
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { MenubarDemo } from "@/components/controller/navbar/navbar";
+
+
+//mode dark
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,13 +23,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+<<<<<<< HEAD
         
         <MenubarDemo/>
         
         {children}
 
 
+=======
+
+        {children}
+
+>>>>>>> 08d6560ffc96fa2c1c68eed900fd3a8224eda2a6
       </body>
     </html>
   );
+}
+
+
+
+
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }
