@@ -1,13 +1,14 @@
+'use client'
 import type { NextPage } from 'next';
-import ChatBox from './chatBot';
+import RuleChatbot from './chatBot';
 
-const Home: NextPage = () => {
+const HomeCHAT: NextPage = () => {
     return (
         <div className="container">
             <h1>Mi Chat Box</h1>
-            <ChatBox />
+            <RuleChatbot />
         </div>
     );
 };
 
-export default Home;
+export default HomeCHAT;

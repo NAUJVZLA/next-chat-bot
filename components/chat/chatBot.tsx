@@ -1,89 +1,87 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+// components/RuleChatbot.tsx
+import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
 
-// Interfaz para un mensaje
-interface IMessage {
-    id: number;
-    text: string;
-    sender: 'user' | 'bot';
-}
+// Definimos el tipo para las reglas del chatbot
+type Rule = {
+    keywords: string[];
+    response: string;
+};
 
-const ChatBox: React.FC = () => {
-    // Estado para almacenar los mensajes
-    const [messages, setMessages] = useState<IMessage[]>([]);
-    // Estado para el input del usuario
+// Definimos las reglas del chatbot
+const rules: Rule[] = [
+    { keywords: ['hola', 'buenos días', 'buenas tardes'], response: '¡Hola! ¿En qué puedo ayudarte hoy?' },
+    { keywords: ['producto', 'artículo'], response: '¡Tenemos una gran variedad de productos! ¿Buscas algo en particular?' },
+    { keywords: ['precio', 'comprar'], response: 'Los precios varían según el producto. ¿Puedes especificar qué artículo te interesa?' },
+    { keywords: ['envío', 'entrega'], response: 'Realizamos envíos a todo el país. El tiempo de entrega depende de tu ubicación.' },
+    { keywords: ['pago', 'tarjeta', 'efectivo'], response: 'Aceptamos pagos con tarjeta de crédito, débito y transferencias bancarias.' },
+    // Agrega más reglas según sea necesario
+];
+
+const RuleChatbot: React.FC = () => {
+    const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
     const [input, setInput] = useState('');
-    // Estado para manejar la carga
-    const [isLoading, setIsLoading] = useState(false);
-    // Referencia para el scroll automático
-    const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
-    // Efecto para scroll automático
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
-
-    // Función para obtener respuesta del bot
-    const getBotResponse = async (message: string): Promise<string> => {
-        try {
-            const response = await axios.post('/api/chat', { message });
-            return response.data.reply;
-        } catch (error) {
-            console.error('Error al obtener respuesta del bot:', error);
-            return "Lo siento, ocurrió un error al procesar tu mensaje.";
+    // Función para procesar el mensaje del usuario y obtener una respuesta
+    const processMessage = (userInput: string): string => {
+        const lowercasedInput = userInput.toLowerCase();
+        for (const rule of rules) {
+            if (rule.keywords.some(keyword => lowercasedInput.includes(keyword))) {
+                return rule.response;
+            }
         }
+        return "Lo siento, no entiendo tu pregunta. ¿Podrías reformularla?";
     };
 
-    // Función para manejar el envío de mensajes
-    const handleSend = async () => {
-        if (input.trim() && !isLoading) {
-            // Añadir el mensaje del usuario
-            const userMessage: IMessage = {
-                id: messages.length,
-                text: input,
-                sender: 'user',
-            };
-            setMessages(prevMessages => [...prevMessages, userMessage]);
-            setInput('');
-            setIsLoading(true);
+    // Función para enviar mensajes
+    const sendMessage = () => {
+        if (input.trim() === '') return;
 
-            // Obtener respuesta del bot
-            const botResponse = await getBotResponse(input);
-            const botMessage: IMessage = {
-                id: messages.length + 1,
-                text: botResponse,
-                sender: 'bot',
-            };
-            setMessages(prevMessages => [...prevMessages, botMessage]);
-            setIsLoading(false);
+        // Agregamos el mensaje del usuario al estado
+        setMessages(prevMessages => [...prevMessages, { role: 'user', content: input }]);
+
+        // Procesamos el mensaje y obtenemos la respuesta
+        const botResponse = processMessage(input);
+
+        // Agregamos la respuesta del bot al estado
+        setMessages(prevMessages => [...prevMessages, { role: 'bot', content: botResponse }]);
+
+        // Limpiamos el input
+        setInput('');
+    };
+
+    // Manejador para el cambio en el input
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+    };
+
+    // Manejador para la tecla "Enter"
+    const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            sendMessage();
         }
     };
 
     return (
-        <div className="container">
+        <div className="chatbot-container">
             <div className="messages">
-                {messages.map(message => (
-                    <div key={message.id} className={`message ${message.sender}`}>
-                        {message.text}
+                {messages.map((message, index) => (
+                    <div key={index} className={`message ${message.role}`}>
+                        {message.content}
                     </div>
                 ))}
-                <div ref={messagesEndRef} />
             </div>
-            <div className="input-area">
+            <div className="input-container">
                 <input
                     type="text"
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                    disabled={isLoading}
+                    onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                     placeholder="Escribe un mensaje..."
                 />
-                <button onClick={handleSend} disabled={isLoading}>
-                    {isLoading ? 'Enviando...' : 'Enviar'}
-                </button>
+                <button onClick={sendMessage}>Enviar</button>
             </div>
         </div>
     );
 };
 
-export default ChatBox;
+export default RuleChatbot;
