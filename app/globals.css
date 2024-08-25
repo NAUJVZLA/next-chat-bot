@@ -75,73 +75,200 @@
 
 
 
-
-
-
-
-
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.chat-box {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.messages {
-  height: 400px;
-  overflow-y: auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-}
-
-.message {
-  margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 18px;
-  max-width: 80%;
-}
-
-.user {
-  background-color: #007bff;
-  color: white;
-  align-self: flex-end;
-  margin-left: auto;
-}
-
-.bot {
-  background-color: #e9e9eb;
-  color: black;
-}
-
-.input-area {
+/* Contenedor principal del chatbot */
+.chatbot-container {
+  width: 300px;
+  /* Ancho fijo del chat */
+  height: 500px;
+  /* Altura fija del chat */
+  border: 1px solid #0C3C60;
+  /* Borde azul oscuro, color típico de Bancolombia */
+  border-radius: 10px;
+  /* Esquinas redondeadas */
   display: flex;
-  padding: 20px;
-  background-color: white;
+  /* Usamos flexbox para organizar los elementos */
+  flex-direction: column;
+  /* Elementos apilados verticalmente */
+  overflow: hidden;
+  /* Oculta cualquier contenido que se salga del contenedor */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* Sombra suave alrededor del chat */
+  background-color: #FFFFFF;
+  /* Fondo blanco */
 }
 
-.input-area input {
+/* Contenedor de los mensajes */
+.message-user {
   flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-right: 10px;
+  /* Ocupa todo el espacio disponible */
+  overflow-y: auto;
+  /* Permite scroll vertical si hay muchos mensajes */
+  padding: 20px;
+  /* Espacio interno */
+  background-color: #F5F7FA;
+  /* Fondo gris claro para los mensajes */
 }
 
-.input-area button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+/* Estilo para cada mensaje individual */
+.message {
+  margin-bottom: 10px;
+  /* Espacio entre mensajes */
+  padding: 10px;
+  /* Espacio interno del mensaje */
+  border-radius: 5px;
+  /* Esquinas redondeadas para los mensajes */
+  max-width: 80%;
+  /* Ancho máximo del mensaje */
+}
+
+/* Estilo para los mensajes del usuario */
+.message.user {
+  background-color: #E8F1F8;
+  /* Azul claro para mensajes del usuario */
+  align-self: flex-end;
+  /* Alinea a la derecha */
+  color: #0C3C60;
+  /* Texto azul oscuro */
+}
+
+
+/* Estilo para los mensajes del bot */
+.message.bot {
+  background-color: #0C3C60;
+  /* Azul oscuro para mensajes del bot */
+  color: #FFFFFF;
+  /* Texto blanco */
+  align-self: flex-start;
+  /* Alinea a la izquierda */
+}
+
+/* Contenedor para el input y el botón */
+.input-container {
+  display: flex;
+  /* Usa flexbox para alinear input y botón */
+  padding: 10px;
+  /* Espacio interno */
+  background-color: #FFFFFF;
+  /* Fondo blanco */
+  border-top: 1px solid #E8E8E8;
+  /* Borde superior sutil */
+}
+
+/* Estilo para el input de texto */
+.input-container input {
+  flex-grow: 1;
+  /* Ocupa todo el espacio disponible */
+  padding: 10px;
+  /* Espacio interno */
+  border: 1px solid #0C3C60;
+  /* Borde azul oscuro */
+  border-radius: 5px;
+  /* Esquinas redondeadas */
+  font-size: 14px;
+  /* Tamaño de fuente */
+}
+
+/* Estilo para el botón de enviar */
+.boton {
+  background-color: #FDB913;
+  /* Amarillo característico de Bancolombia */
+  color: #0C3C60;
+  /* Texto azul oscuro */
   border: none;
-  border-radius: 4px;
+  /* Sin borde */
+  padding: 10px 20px;
+  /* Espacio interno */
+  border-radius: 5px;
+  /* Esquinas redondeadas */
+  margin-left: 10px;
+  /* Espacio a la izquierda del botón */
+  cursor: pointer;
+  /* Cambia el cursor a una mano al pasar por encima */
+  font-weight: bold;
+  /* Texto en negrita */
+  transition: background-color 0.3s;
+  /* Transición suave al cambiar de color */
+}
+
+/* Efecto al pasar el mouse por encima del botón */
+.boton:hover {
+  background-color: #F0A500;
+  /* Amarillo más oscuro al pasar el mouse */
+}
+
+
+.chatbotIconContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.chatbotIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #0C3C60;
+  color: white;
+  font-size: 24px;
+  border: none;
   cursor: pointer;
 }
 
-.input-area button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+.chatbotMenu {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  width: 300px;
+  background-color: white;
+  border: 1px solid #0C3C60;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.whatsappButton,
+.chatbotMenu button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #FDB913;
+  color: #0C3C60;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.chatTree {
+  margin-top: 20px;
+}
+
+.conversation {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #E8E8E8;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.userMessage,
+.botMessage {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.userMessage {
+  background-color: #E8F1F8;
+  text-align: right;
+}
+
+.botMessage {
+  background-color: #F5F7FA;
+}
+
+.options button {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
 }

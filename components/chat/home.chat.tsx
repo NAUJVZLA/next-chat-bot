@@ -1,14 +1,14 @@
-'use client'
-import type { NextPage } from 'next';
+
+// pages/index.tsx
 import RuleChatbot from './chatBot';
 
-const HomeCHAT: NextPage = () => {
-    return (
-        <div className="container">
-            <h1>Mi Chat Box</h1>
-            <RuleChatbot />
-        </div>
-    );
+const HomeChat: React.FC = () => {
+  return (
+    <div>
+      <h1>Mi Tienda en Línea</h1>
+      <RuleChatbot />
+    </div>
+  );
 };
 
-export default HomeCHAT;
+export default HomeChat;

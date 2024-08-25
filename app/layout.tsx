@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { MenubarDemo } from "@/components/controller/navbar/navbar";
 
+
 //mode dark
 const inter = Inter({ subsets: ["latin"] });
 

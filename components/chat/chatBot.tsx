@@ -1,75 +1,123 @@
-// components/RuleChatbot.tsx
-import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
+// importamos las herramientas que tienen reat 
+import React, { useState, KeyboardEvent, ChangeEvent, useRef, useEffect } from 'react';
 
-// Definimos el tipo para las reglas del chatbot
+// definimos que reglas recibe para sabeer que responder 
 type Rule = {
-    keywords: string[];
-    response: string;
+    keywords: string[];  // palabras clave que va a  buscar
+    response: string;    // respuesta del chatbot
 };
 
-// Definimos las reglas del chatbot
+// aquí están todas las reglas del chatbot lo que va a responder dependiedno que escriben
 const rules: Rule[] = [
-    // Saludos y bienvenida
-    { keywords: ['hola', 'buenos días', 'buenas tardes'], response: '¡Bienvenido a nuestra tienda online! ¿En qué puedo ayudarte hoy?' },
+    // saludos y bienvenida
+    {
+        keywords: ['hola', 'buenos días', 'buenas tardes', 'buenas noches', 'saludos', 'qué tal'],
+        response: '¡Bienvenido a nuestra tienda online de moda! ¿En qué puedo ayudarte hoy?'
+    },
 
-    // Categorías principales
-    { keywords: ['producto', 'artículo', 'ropa', 'prendas'], response: 'Ofrecemos ropa para toda la familia. ¿Buscas algo para niños, adultos, mujeres o niñas?' },
-    { keywords: ['niño', 'ropa de niño'], response: 'En nuestra sección de niños tenemos camisetas, pantalones, shorts y más. ¿Qué edad tiene el niño?' },
-    { keywords: ['adulto', 'hombre', 'ropa de hombre'], response: 'Para hombres tenemos camisas, pantalones, trajes y ropa deportiva. ¿Buscas algo formal o casual?' },
-    { keywords: ['mujer', 'ropa de mujer'], response: 'Nuestra colección de mujeres incluye vestidos, blusas, faldas y más. ¿Qué estilo te interesa?' },
-    { keywords: ['niña', 'ropa de niña'], response: 'Para niñas ofrecemos vestidos, faldas, pantalones y conjuntos adorables. ¿Qué edad tiene la niña?' },
+    // Ropa de niños
+    {
+        keywords: ['ropa de niño', 'ropa', 'ropa de nino', 'ropa infantil', 'ropa para niños', 'moda infantil', 'ropa de bebé', 'prendas infantiles'],
+        response: 'Tenemos una amplia selección de ropa para niños y bebés. ¿Buscas algo específico como camisetas, pantalones, pijamas o ropa deportiva para niños?'
+    },
 
-    // Tallas y medidas
-    { keywords: ['talla', 'medida', 'guía de tallas'], response: 'Tenemos una guía de tallas detallada en nuestro sitio. ¿Necesitas ayuda con alguna talla en particular?' },
+    // Ropa de adultos - Hombres
+    {
+        keywords: ['ropa de hombre', 'moda masculina', 'prendas para caballero', 'ropa de caballero', 'vestimenta masculina'],
+        response: 'Nuestra sección de hombres ofrece una gran variedad. ¿Estás buscando ropa casual, formal, deportiva o accesorios para hombre?'
+    },
 
-    // Precios y pagos
-    { keywords: ['precio', 'costo', 'pago', 'tarjeta', 'efectivo'], response: 'Aceptamos múltiples formas de pago, incluyendo tarjetas y PayPal. ¿Tienes alguna duda sobre los precios o métodos de pago?' },
+    // Ropa de adultos - Mujeres
+    {
+        keywords: ['ropa de mujer', 'moda femenina', 'prendas para dama', 'ropa de dama', 'vestimenta femenina'],
+        response: 'En nuestra sección de mujeres encontrarás todo tipo de prendas. ¿Te interesa ropa casual, vestidos, ropa deportiva o quizás accesorios?'
+    },
 
-    // Envíos y entregas
-    { keywords: ['envío', 'entrega', 'tiempo de entrega'], response: 'Realizamos envíos a todo el país. El tiempo estándar es de 3-5 días hábiles. ¿Necesitas más detalles sobre envíos?' },
+    // Tallas especiales
+    {
+        keywords: ['tallas grandes', 'tallas pequeñas', 'ropa xl', 'ropa xxl', 'tallas extra'],
+        response: 'Ofrecemos una amplia gama de tallas para todos los cuerpos. ¿Necesitas ayuda para encontrar tu talla ideal?'
+    },
+
+    // Descuentos y ofertas
+    {
+        keywords: ['descuento', 'oferta', 'promoción', 'rebajas', 'liquidación', 'sale'],
+        response: '¡Tenemos grandes descuentos! Actualmente ofrecemos hasta 50% de descuento en nuestra colección de temporada. ¿Te gustaría ver nuestras ofertas destacadas?'
+    },
+
+    // Ubicación
+    {
+        keywords: ['ubicación', 'dirección', 'tienda física', 'local', 'sucursal'],
+        response: 'Nuestra tienda principal está ubicada en el centro comercial Plaza Mayor, calle Principal #123. También tenemos sucursales en otras ciudades. ¿Necesitas la dirección de alguna en particular?'
+    },
+
+    // Horarios
+    {
+        keywords: ['horario', 'hora de atención', 'cuándo abren', 'cuándo cierran'],
+        response: 'Nuestras tiendas físicas están abiertas de lunes a sábado de 10:00 AM a 9:00 PM, y los domingos de 11:00 AM a 7:00 PM. Nuestra tienda online está disponible 24/7.'
+    },
+
+    // Envíos
+    {
+        keywords: ['hacen envios?', 'hacen envios ?', 'envios', 'delivery', 'entrega', 'shipping'],
+        response: 'Sí, realizamos envíos a todo el país. Los tiempos de entrega varían según la ubicación, pero generalmente son de 3 a 5 días hábiles. ¿Necesitas información sobre costos de envío?'
+    },
+
+    // WhatsApp
+    {
+        keywords: ['tienen whatsapp ?', 'tienen whatsapp', 'dame tu contacto', 'número de teléfono', 'chat'],
+        response: 'Puedes contactarnos por WhatsApp al número +573147327452. Estamos disponibles para chat de lunes a viernes de 9:00 AM a 6:00 PM.'
+    },
+
+    // Métodos de pago
+    {
+        keywords: ['pago', 'forma de pago', 'tarjeta', 'efectivo', 'transferencia', 'paypal'],
+        response: 'Aceptamos múltiples formas de pago: tarjetas de crédito/débito, PayPal, transferencias bancarias y pago contra entrega en algunas zonas. ¿Tienes alguna preferencia en particular?'
+    },
+
+    // Cuentas bancarias
+    {
+        keywords: ['cuenta bancaria', 'depósito', 'banco', 'número de cuenta'],
+        response: 'Tenemos cuentas en los principales bancos del país. Si deseas hacer un depósito o transferencia, puedo proporcionarte los detalles de la cuenta que prefieras. ¿De qué banco te gustaría la información?'
+    },
 
     // Devoluciones y cambios
-    { keywords: ['devolución', 'cambio', 'reembolso'], response: 'Ofrecemos devoluciones gratuitas dentro de los 30 días. ¿Quieres conocer más sobre nuestra política de devoluciones?' },
+    {
+        keywords: ['devolución', 'cambio', 'reembolso', 'garantía'],
+        response: 'Ofrecemos devoluciones y cambios gratuitos dentro de los 30 días posteriores a la compra. ¿Necesitas más detalles sobre nuestra política de devoluciones?'
+    },
 
-    // Ofertas y promociones
-    { keywords: ['oferta', 'descuento', 'promoción'], response: 'Actualmente tenemos descuentos de hasta el 30% en ropa de temporada. ¿Te interesa alguna categoría en particular?' },
+    // Novedades y tendencias
+    {
+        keywords: ['novedades', 'nueva colección', 'tendencias', 'moda actual'],
+        response: '¡Nuestra nueva colección de temporada acaba de llegar! Incluye las últimas tendencias en moda para toda la familia. ¿Te gustaría ver algunos de nuestros artículos destacados?'
+    },
 
     // Atención al cliente
-    { keywords: ['ayuda', 'atención al cliente', 'asistencia'], response: 'Nuestro equipo está disponible de lunes a viernes de 9:00 a 18:00. ¿En qué podemos ayudarte?' },
-
-    // Materiales y cuidado
-    { keywords: ['material', 'tela', 'cuidado'], response: 'Usamos materiales de alta calidad. Cada prenda tiene instrucciones específicas de cuidado. ¿Tienes dudas sobre algún material?' },
-
-    // Colecciones y temporadas
-    { keywords: ['colección', 'temporada', 'nueva llegada'], response: '¡Nuestra colección de primavera/verano acaba de llegar! ¿Quieres que te muestre las últimas tendencias?' },
-
-    // Accesorios
-    { keywords: ['accesorio', 'complemento', 'joyería'], response: 'Tenemos una amplia gama de accesorios, desde bolsos hasta joyería. ¿Buscas algo en particular?' },
-
-    // Programa de fidelidad
-    { keywords: ['puntos', 'fidelidad', 'recompensas'], response: 'Nuestro programa de fidelidad te permite ganar puntos en cada compra. ¿Quieres saber más sobre los beneficios?' },
-
-    // Sostenibilidad
-    { keywords: ['sostenible', 'ecológico', 'medio ambiente'], response: 'Nos comprometemos con la moda sostenible. Muchas de nuestras prendas están hechas con materiales reciclados.' },
-
-    // Personalización
-    { keywords: ['personalizar', 'customizar', 'a medida'], response: 'Ofrecemos servicios de personalización para ciertos artículos. ¿Te interesa personalizar alguna prenda?' },
-
-    // Redes sociales
-    { keywords: ['instagram', 'facebook', 'redes sociales'], response: '¡Síguenos en Instagram y Facebook para ver nuestras últimas colecciones y ofertas exclusivas!' },
-
-    // Opiniones y reseñas
-    { keywords: ['opinión', 'reseña', 'comentario'], response: 'Puedes ver las opiniones de otros clientes en cada producto. ¿Buscas información sobre algún artículo en particular?' },
-
-    // Información de la empresa
-    { keywords: ['sobre nosotros', 'historia', 'empresa'], response: 'Somos una empresa familiar con más de 20 años en el sector de la moda. ¿Quieres saber más sobre nuestra historia?' },
+    {
+        keywords: ['atención al cliente', 'servicio al cliente', 'ayuda', 'asistencia'],
+        response: 'Nuestro equipo de atención al cliente está disponible para ayudarte. ¿Tienes alguna pregunta o inquietud específica en la que podamos asistirte?'
+    }
 ];
 
+// Esta es la función principal del chatbot
 const RuleChatbot: React.FC = () => {
+    // Guardamos los mensajes del chat
     const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
+    // Guardamos lo que el usuario está escribiendo
     const [input, setInput] = useState('');
+    // Creamos una referencia para el final de los mensajes
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Función para procesar el mensaje del usuario y obtener una respuesta
+    // Esta función hace que el chat se desplace hacia abajo automáticamente
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    // Usamos esta función cada vez que hay nuevos mensajes
+    useEffect(scrollToBottom, [messages]);
+
+    // Esta función busca la respuesta correcta para el mensaje del usuario
     const processMessage = (userInput: string): string => {
         const lowercasedInput = userInput.toLowerCase();
         for (const rule of rules) {
@@ -80,56 +128,59 @@ const RuleChatbot: React.FC = () => {
         return "Lo siento, no entiendo tu pregunta. ¿Podrías reformularla?";
     };
 
-    // Función para enviar mensajes
+    // esta función envía el mensaje del usuario y obtiene la respuesta del bot
     const sendMessage = () => {
         if (input.trim() === '') return;
 
-        // Agregamos el mensaje del usuario al estado
+        // agregamos el mensaje del usuario
         setMessages(prevMessages => [...prevMessages, { role: 'user', content: input }]);
 
-        // Procesamos el mensaje y obtenemos la respuesta
+        // obtenemos la respuesta del bot
         const botResponse = processMessage(input);
 
-        // Agregamos la respuesta del bot al estado
+        // agregamos la respuesta del bot
         setMessages(prevMessages => [...prevMessages, { role: 'bot', content: botResponse }]);
 
-        // Limpiamos el input
+        // dejamos limpio el cuadro de texto
         setInput('');
     };
 
-    // Manejador para el cambio en el input
+    // esta función se activa cuando el usuario escribe en el cuadro de texto
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInput(e.target.value);
     };
 
-    // Manejador para la tecla "Enter"
+    // esta función se activa cuando el usuario presiona una tecla
     const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             sendMessage();
         }
     };
 
+    // aquí estructuramos el chat 
     return (
         <div className="chatbot-container">
-            <div className="messages">
+            <div className="message.user">
                 {messages.map((message, index) => (
                     <div key={index} className={`message ${message.role}`}>
                         {message.content}
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </div>
-            <div className="input-container">
-                <input
-                    type="text"
-                    value={input}
-                    onChange={handleInputChange}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Escribe un mensaje..."
-                />
-                <button onClick={sendMessage}>Enviar</button>
+            <input className='input-container'
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            />
+            <div>
+                <button className='boton' onClick={sendMessage}>Enviar</button>
             </div>
+
         </div>
     );
 };
 
+// exportamos el chatbot para que se pueda usar en otras partes de la aplicación
 export default RuleChatbot;
