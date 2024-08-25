@@ -131,6 +131,7 @@
   /* Texto azul oscuro */
 }
 
+
 /* Estilo para los mensajes del bot */
 .message.bot {
   background-color: #0C3C60;
@@ -193,4 +194,81 @@
 .boton:hover {
   background-color: #F0A500;
   /* Amarillo más oscuro al pasar el mouse */
+}
+
+
+.chatbotIconContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.chatbotIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #0C3C60;
+  color: white;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.chatbotMenu {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  width: 300px;
+  background-color: white;
+  border: 1px solid #0C3C60;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.whatsappButton,
+.chatbotMenu button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #FDB913;
+  color: #0C3C60;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.chatTree {
+  margin-top: 20px;
+}
+
+.conversation {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #E8E8E8;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.userMessage,
+.botMessage {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.userMessage {
+  background-color: #E8F1F8;
+  text-align: right;
+}
+
+.botMessage {
+  background-color: #F5F7FA;
+}
+
+.options button {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
 }
