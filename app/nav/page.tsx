@@ -6,7 +6,7 @@ export default function Navigator() {
     return (
 
         <div>
-            {/* <HomeCHAT /> */}
+            {/* <HomeCHAT />   */}
             <ChatbotIcon />
         </div>
 
