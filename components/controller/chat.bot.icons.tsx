@@ -13,6 +13,8 @@ const ChatbotIcon: React.FC = () => {
       </button>
       {/* Si isOpen es true, muestra el ChatbotMenu */}
       {isOpen && <ChatbotMenu />}
+
+
     </div>
   );
 };
